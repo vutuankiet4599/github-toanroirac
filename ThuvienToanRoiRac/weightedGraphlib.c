@@ -7,6 +7,9 @@
 
 #define INFINITIVE_VALUE 10000000
 
+int time;
+int pre[1000], pos[1000];
+
 Graph createGraph(){
   Graph g = (Graph)malloc(sizeof(struct _Graph));
   if(g==NULL) {
@@ -192,14 +195,50 @@ void DFS(Graph g, int v1, bool visited[], void (*func)(int))
 	int adj[1000];
 	int n;
 	n = outdegree(g, v1, adj);
+
 	func(v1);
 	visited[v1] = true;
+
 	for(int i = 0; i < n; i++)
 	{
 		if(visited[adj[i]] == false)
 		DFS(g, adj[i], visited, func);
 	}
-	 
+}
+
+void DFSfindSC(Graph g, int v1, bool visited[])
+{	
+	int adj[1000];
+	int n;
+	n = outdegree(g, v1, adj);
+
+	visited[v1] = true;
+
+	for(int i = 0; i < n; i++)
+	{
+		if(visited[adj[i]] == false)
+		DFSfindSC(g, adj[i], visited);
+	}
+}
+
+void reverseDFSfindSC(Graph g, int v1, bool visited[])
+{	
+	int adj[1000];
+	int n;
+	n = indegree(g, v1, adj);
+
+	visited[v1] = true;
+	pre[v1] = time;
+	time += 1;
+
+	for(int i = 0; i < n; i++)
+	{
+		if(visited[adj[i]] == false)
+		reverseDFSfindSC(g, adj[i], visited);
+	}
+
+	pos[v1] = time;
+	time += 1;
 }
 
 double dijikstra(Graph graph, int start, int stop, int *path, int *length){
@@ -350,6 +389,57 @@ void topology(Graph g, void (*func)(int)){
 	printf("\n");
 	
 	free_dllist(queue);
+}
+
+int numStrongConnect(Graph g)
+{
+	int count = 0;
+	bool visited[1000];
+	memset(pre, 0, sizeof(pre));
+	memset(pos, 0, sizeof(pos));
+	memset(visited, false, sizeof(visited));
+	JRB node;
+	int id;
+	int posMax[1000], num = 0;
+	time = 1;
+
+	jrb_traverse(node, g->vertices)
+	{
+		id = jval_i(node->key);
+		if(visited[id] == false)
+		{
+			reverseDFSfindSC(g, id, visited);
+		}
+	}
+
+	int temp;
+	jrb_traverse(node, g->vertices)
+	{
+		temp = 0;
+		for(int i = 0; i < 1000; i++)
+		{
+			if(temp < pos[i])
+			{
+				temp = pos[i];
+				id = i;
+			}
+		}
+		posMax[num] = id;
+		num ++;
+		pos[id] = 0;
+	}
+
+	memset(visited, false, sizeof(visited));
+	for(int i = 0; i < num; i++)
+	{
+		if(visited[posMax[i]] == false)
+		{
+			count ++;
+			DFSfindSC(g, posMax[i], visited);
+		}
+	}
+
+	return count;
 }
 
 void dropGraph(Graph graph)

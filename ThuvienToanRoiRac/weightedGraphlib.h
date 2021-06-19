@@ -28,9 +28,10 @@ int indegree(Graph graph, int v, int* output);
 int outdegree(Graph graph, int v, int* output);
 void BFS(Graph graph, int v1, int v2, void (*func)(int));
 void DFS(Graph g, int v1, bool visited[], void (*func)(int));
+void DFSfindSC(Graph g, int v1, bool visited[]);
+void reverseDFSfindSC(Graph g, int v1, bool visited[]);
 double dijikstra(Graph graph, int start, int stop, int *path, int *length);
 int DAG(Graph graph);
 void topology(Graph g, void (*func)(int));
+int numStrongConnect(Graph g);
 void dropGraph(Graph graph);
-
-
