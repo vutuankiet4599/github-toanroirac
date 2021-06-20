@@ -2,30 +2,33 @@
 #include<stdlib.h>
 #include"graphlib.h"
 #include "string.h"
+
+#define INFINITIVE_VALUE 10000000
+
 graph creategraph(){
   return make_jrb();
 }
 
-void addedge(graph graph, int v1, int v2)
+void addedge(graph graph, int v1, int v2, double weight)
 {
   JRB node=jrb_find_int(graph,v1);
   JRB tree;
   if(node==NULL) {
     tree=make_jrb();
     jrb_insert_int(graph,v1,new_jval_v(tree));
-    jrb_insert_int(tree,v2,JNULL);
+    jrb_insert_int(tree,v2,new_jval_d(weight));
   }
   else {tree=(JRB)(node->val).v;
-    jrb_insert_int(tree,v2,JNULL);
+    jrb_insert_int(tree,v2,new_jval_d(weight));
   }
   node=jrb_find_int(graph,v2);
   if(node==NULL) { 
     tree=make_jrb();
     jrb_insert_int(graph,v2,new_jval_v(tree));
-    jrb_insert_int(tree,v1,JNULL);
+    jrb_insert_int(tree,v1,new_jval_d(weight));
   }
   else {tree=(JRB)(node->val).v;
-    jrb_insert_int(tree,v1,JNULL);
+    jrb_insert_int(tree,v1,new_jval_d(weight));
   }
 }
 //tra ve 0 neu khong tim thay ,1 tim thay
@@ -49,6 +52,136 @@ int incidentedges(graph graph, int vertex, int* output)
     output[num++]=(node->key).i;
   }
   return num;
+}
+
+double getEdgeValue(graph graph, int v1, int v2)
+{
+  JRB enode = jrb_find_int(graph, v1);
+  JRB tree;
+  if(enode == NULL)
+  {
+    printf("vertex not found\n");
+    return INFINITIVE_VALUE;
+  }
+
+  tree = jrb_find_int((JRB)(enode->val).v, v2);
+  if(tree == NULL)
+  {
+    return INFINITIVE_VALUE;
+  }
+
+  return (tree->val).d;
+}
+
+void swap(dscanh a[], int i, int j)
+{
+  dscanh temp;
+  temp = a[i];
+  a[i]=a[j];
+  a[j]=temp;
+}
+
+int partition(dscanh a[], int left, int right)
+{
+  int i = left;
+  int j = right+1;
+  double pivot = a[left].weight;
+  while(i<j)
+  {
+    i = i+1;
+    while(i<=right && a[i].weight<=pivot)i++;
+    j=j-1;
+    while(j>=left && a[j].weight>pivot)j--;
+    swap(a, i, j);
+  }
+  swap(a, i, j);
+  swap(a,j,left);
+  return j;
+}
+
+void qsort2way(dscanh a[], int left, int right)
+{
+  int pivot;
+  if(left<right)
+  {
+    pivot = partition(a, left, right);
+    qsort2way(a, left, pivot-1);
+    qsort2way(a, pivot+1, right);
+  }
+}
+
+
+int MST(graph g, dscanh ds[], dscanh mst[])
+{
+  JRB node;
+  int n;
+  int path[MAX];
+  int socanh, count, sodinh;
+  socanh = 0;
+  sodinh = 0;
+  jrb_traverse(node, g)
+  {
+    sodinh++;
+    int id;
+    id = jval_i(node->key);
+    n = incidentedges(g, id, path);
+    for(int i = 0; i < n; i++)
+    {
+      count = 0;
+      for(int j = 0; j < socanh; j++)
+      {
+        if ((id == ds[j].x && path[i] == ds[j].y) || (id == ds[j].y && path[i] == ds[j].x))
+        {
+          count++;
+        }
+      }
+
+      if(count == 0)
+      {
+        ds[socanh].x = id;
+        ds[socanh].y = path[i];
+        ds[socanh].weight = getEdgeValue(g, id, path[i]);
+        socanh++;
+      }
+    }
+  }
+  qsort2way(ds, 0, socanh - 1);
+
+  int d[MAX], k;
+  int dem = 0;
+  double weight = 0;
+  k = 0;
+
+  for(int i = 0; i < sodinh; i++)d[i] = -i;
+  for(int i = 0; i < socanh; i++)
+  {
+    if(d[ds[i].x] != d[ds[i].y])
+    {
+      mst[dem++] = ds[i];
+      weight = weight + ds[i].weight;
+      if(d[ds[i].x] < 0 && d[ds[i].y] < 0)
+      {
+        k++;
+        d[ds[i].x] = k;
+        d[ds[i].y] = k;
+      }else if( d[ds[i].x] > 0 && d[ds[i].y] > 0)
+      {
+        int x = d[ds[i].y];
+        for(int j = 0; j < sodinh; j++)
+        {
+          if(d[j] == x) d[j] = d[ds[i].x];
+        }
+      }else
+      {
+        int a;
+        a = d[ds[i].x] > d[ds[i].y] ? d[ds[i].x] : d[ds[i].y];
+        d[ds[i].x] = a;
+        d[ds[i].y] = a;
+      }
+    }
+  }
+
+  return dem;
 }
 
 void dropgraph(graph graph)
@@ -115,11 +248,11 @@ graph readfromfile(char *filename,Ver ListVer[],int *sodinh,int *socanh){
   {
     fscanf(f,"%d %d\n",&canh1,&canh2);
     //printf("check edge:%d--%d\n",canh1,canh2);
-    addedge(g,canh1,canh2);
+    addedge(g,canh1,canh2,1);
   }if(i==1){
     fscanf(f,"%d %d",&canh1,&canh2);
      //  printf("check edge:%d--%d\n",canh1,canh2);
-    addedge(g,canh1,canh2);
+    addedge(g,canh1,canh2,1);
   }
   for ( i = 0; i < *sodinh; i++)
   {

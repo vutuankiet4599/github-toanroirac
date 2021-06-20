@@ -1,27 +1,36 @@
 #ifndef graphlib_h
 #define graphlib_h
 #include"jrb.h"
-#define MAX 100000
+
+#define MAX 10000
+#define INFINITIVE_VALUE 10000000
 typedef JRB graph;
+
 typedef struct bangmau{
   char color[50];
   int idcolor;
 }Mau;
+
 typedef struct Vertice
 {
   int colorVer;
   int idVer;
   int Bac;
 }Ver;//dung cho bai 2
+
 typedef struct dscanh
 {
     int x;
     int y;
+    double weight;
 }dscanh;//dung cho bai 1
+
 graph creategraph();
-void addedge(graph graph, int v1, int v2);
+void addedge(graph graph, int v1, int v2, double weight);
 int adjacent(graph graph, int v1, int v2);
 int incidentedges(graph graph, int vertex, int* output); 
+double getEdgeValue(graph graph, int v1, int v2);
+int MST(graph g, dscanh ds[], dscanh mst[]);
 void dropgraph(graph graph);
 void printdotfile(char *datafile,char *filenamedot,Ver ListVer[],Mau bangmau[],int countmau);
 char *getnamecolor(Mau mau[],int countmau,int idmau);
