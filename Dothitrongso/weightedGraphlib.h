@@ -3,6 +3,7 @@
 #endif
 
 #define INFINITIVE_VALUE 10000000
+#define MAX 10000
 
 #include "jrb.h"
 #include <stdbool.h>
