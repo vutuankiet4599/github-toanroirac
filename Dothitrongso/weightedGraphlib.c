@@ -477,14 +477,14 @@ void exportDotfile(Graph g, LE list[])
 
 	FILE *f = fopen("Graph.dot","w+");
 	if(f==NULL){
-    printf("cannot write");
+    printf("cannot write\n");
     exit(1);
   }
 
   fprintf(f,"digraph g{\n");
   for(int i = 0; i < nEdge; i++)
   {
-  	fprintf(f, "%d -> %d\n",list[i].first, list[i].last);
+  	fprintf(f, "%d -> %d [label = \"%.3f\", weight = \"%.3f\"];\n",list[i].first, list[i].last, list[i].weight, list[i].weight);
   }
   fprintf(f, "}");
 	fclose(f);
