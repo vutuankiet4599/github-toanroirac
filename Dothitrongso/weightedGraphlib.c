@@ -443,6 +443,53 @@ int numStrongConnect(Graph g)
 	return count;
 }
 
+void exportDotfile(Graph g, LE list[])
+{
+	JRB node;
+	int n, path[MAX], count;
+	int nVer = 0, nEdge = 0;
+	jrb_traverse(node, g->vertices)
+	{
+		nVer ++;
+		int id;
+		id = jval_i(node->key);
+		n = outdegree(g, id, path);
+		for(int i = 0; i < n; i++)
+		{
+			count = 0;
+			for(int j = 0; j < nEdge; j++)
+			{
+				if(id == list[j].first && path[i] == list[j].last)
+				{
+					count++;
+				}
+			}
+
+			if(count == 0)
+			{
+				list[nEdge].first = id;
+				list[nEdge].last = path[i];
+				list[nEdge].weight = getEdgeValue(g, id, path[i]);
+				nEdge++;
+			}
+		} 
+	}
+
+	FILE *f = fopen("Graph.dot","w+");
+	if(f==NULL){
+    printf("cannot write");
+    exit(1);
+  }
+
+  fprintf(f,"digraph g{\n");
+  for(int i = 0; i < nEdge; i++)
+  {
+  	fprintf(f, "%d -> %d\n",list[i].first, list[i].last);
+  }
+  fprintf(f, "}");
+	fclose(f);
+}
+
 void dropGraph(Graph graph)
 {
 	JRB node,innode;

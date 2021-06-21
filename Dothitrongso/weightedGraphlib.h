@@ -19,6 +19,12 @@ typedef struct _Graph{
 	JRB vertices;
 } *Graph;
 
+typedef struct listEdge{
+	int first;
+	int last;
+	double weight;
+}LE;
+
 Graph createGraph();
 void addVertex(Graph graph, int id, char* name);
 char *getVertex(Graph graph, int id);
@@ -35,4 +41,5 @@ double dijikstra(Graph graph, int start, int stop, int *path, int *length);
 int DAG(Graph graph);
 void topology(Graph g, void (*func)(int));
 int numStrongConnect(Graph g);
+void exportDotfile(Graph g, LE list[]);
 void dropGraph(Graph graph);
