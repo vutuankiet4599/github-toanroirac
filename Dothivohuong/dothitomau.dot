@@ -1,16 +1,21 @@
 graph dothi{
-1 [fillcolor=red, style=filled];
-2 [fillcolor=lightseagreen, style=filled];
-3 [fillcolor=red, style=filled];
+2 [fillcolor=red, style=filled];
 4 [fillcolor=lightseagreen, style=filled];
 5 [fillcolor=yellow, style=filled];
-6 [fillcolor=yellow, style=filled];
-1 -- 2;
-2 -- 3;
-3 -- 4;
-4 -- 1;
-1 -- 5;
-1 -- 6;
-2 -- 5;
-6 -- 2;
+6 [fillcolor=red, style=filled];
+7 [fillcolor=lightseagreen, style=filled];
+1 [fillcolor=yellow, style=filled];
+3 [fillcolor=lightseagreen, style=filled];
+1--2 [label="7.10"]
+1--4 [label="5.10"]
+2--4 [label="9.10"]
+2--3 [label="8.10"]
+2--5 [label="7.10"]
+2--4 [label="9.10"]
+3--5 [label="5.10"]
+4--6 [label="6.10"]
+4--5 [label="15.10"]
+5--6 [label="8.10"]
+5--7 [label="9.10"]
+6--7 [label="11.10"]
 }

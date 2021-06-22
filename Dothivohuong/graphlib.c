@@ -111,14 +111,16 @@ void qsort2way(dscanh a[], int left, int right)
 }
 
 
-int MST(graph g, dscanh ds[], dscanh mst[])
+int MST(graph g, dscanh mst[])
 {
+  dscanh ds[MAX];
   JRB node;
   int n;
   int path[MAX];
   int socanh, count, sodinh;
   socanh = 0;
   sodinh = 0;
+  //Luu graph vao ds canh theo kiet to chang`
   jrb_traverse(node, g)
   {
     sodinh++;
@@ -146,7 +148,7 @@ int MST(graph g, dscanh ds[], dscanh mst[])
     }
   }
   qsort2way(ds, 0, socanh - 1);
-
+//MST 
   int d[MAX], k;
   int dem = 0;
   double weight = 0;
@@ -193,6 +195,10 @@ void dropgraph(graph graph)
   jrb_free_tree(graph);
 }
 //prufercode
+void printVertex(int key)
+{
+  printf("%4d", key);
+}
 void prtprufercode(int *bac,dscanh *ds1,int n){
   int i,k;
   if(bac[0]==0)return;
@@ -244,15 +250,17 @@ graph readfromfile(char *filename,Ver ListVer[],int *sodinh,int *socanh){
   }
   fscanf(f,"%d %d\n",sodinh,socanh);
   int i,canh1,canh2;
+  double weight;
   for ( i = 0; i < *socanh; i++)
   {
-    fscanf(f,"%d %d\n",&canh1,&canh2);
+    fscanf(f,"%d %d %lf\n",&canh1,&canh2,&weight);
     //printf("check edge:%d--%d\n",canh1,canh2);
-    addedge(g,canh1,canh2,1);
-  }if(i==1){
-    fscanf(f,"%d %d",&canh1,&canh2);
+    addedge(g,canh1,canh2,weight);
+    if(i==*socanh-1){
+    fscanf(f,"%d %d %lf",&canh1,&canh2,&weight);
      //  printf("check edge:%d--%d\n",canh1,canh2);
-    addedge(g,canh1,canh2,1);
+    addedge(g,canh1,canh2,weight);
+  }
   }
   for ( i = 0; i < *sodinh; i++)
   {
@@ -329,14 +337,15 @@ void printdotfile(char *datafile,char *filenamedot,Ver ListVer[],Mau bangmau[],i
   }
   
   int canh1,canh2;
+  double weight;
   for ( i = 0; i < socanh; i++)
   {
-    fscanf(f2,"%d %d\n",&canh1,&canh2);
+    fscanf(f2,"%d %d %lf\n",&canh1,&canh2,&weight);
     //printf("check edge:%d--%d\n",canh1,canh2);
-    fprintf(f,"%d -- %d;\n",canh1,canh2);
+    fprintf(f,"%d--%d [label=\"%.2lf\"]\n",canh1,canh2,weight);
   }if(i==1){
-    fscanf(f2,"%d %d",&canh1,&canh2);
-    fprintf(f,"%d -- %d;\n",canh1,canh2);
+    fscanf(f2,"%d %d %lf",&canh1,&canh2,&weight);
+    fprintf(f,"%d--%d [label=\"%.2lf\"]\n",canh1,canh2,weight);
      //  printf("check edge:%d--%d\n",canh1,canh2);
   }
   fprintf(f,"}");
@@ -344,6 +353,8 @@ void printdotfile(char *datafile,char *filenamedot,Ver ListVer[],Mau bangmau[],i
 
 }
 void readfilePrufer(char *filename,dscanh ds1[],int bac[],int *n){
+
+  
   FILE *f=fopen(filename,"r");
   if(f==NULL){
     printf("Error open file data file prufercode");
@@ -360,4 +371,17 @@ void readfilePrufer(char *filename,dscanh ds1[],int bac[],int *n){
     bac[x]++;
     bac[y]++;
   }
+}
+void prindotfilemst(dscanh *mst,int canhmst){
+  FILE *f=fopen("graphMST.dot","w+");
+  if(f==NULL){
+    printf("cannot write");
+    exit(1);
+  }
+  fprintf(f,"Graph MST{\n");
+  for(int i = 0; i < canhmst; i++)
+  {
+    fprintf(f,"%d--%d [label=\"%.2lf\"]\n", mst[i].x, mst[i].y, mst[i].weight);
+  }
+  fprintf(f,"}");
 }
