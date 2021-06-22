@@ -6,9 +6,10 @@
 #include <stdbool.h>
 
 #define INFINITIVE_VALUE 10000000
+#define MAX 10000
 
 int time;
-int pre[1000], pos[1000];
+int pre[MAX], pos[MAX];
 
 Graph createGraph(){
   Graph g = (Graph)malloc(sizeof(struct _Graph));
@@ -151,11 +152,11 @@ void BFS(Graph graph, int v1, int v2, void (*func)(int))
    Dllist tmp, node, ptr;
    Jval v;
    int count;
-   bool visited[1000];
-   int adj[1000];
+   bool visited[MAX];
+   int adj[MAX];
    int n;
 
-   for(int i = 0; i < 1000; i++)visited[i] = false;
+   for(int i = 0; i < MAX; i++)visited[i] = false;
    dll_append(queue, new_jval_i(v1));
 
    while(!dll_empty(queue))
@@ -192,7 +193,7 @@ void BFS(Graph graph, int v1, int v2, void (*func)(int))
 
 void DFS(Graph g, int v1, bool visited[], void (*func)(int))
 {	
-	int adj[1000];
+	int adj[MAX];
 	int n;
 	n = outdegree(g, v1, adj);
 
@@ -208,7 +209,7 @@ void DFS(Graph g, int v1, bool visited[], void (*func)(int))
 
 void DFSfindSC(Graph g, int v1, bool visited[])
 {	
-	int adj[1000];
+	int adj[MAX];
 	int n;
 	n = outdegree(g, v1, adj);
 
@@ -223,7 +224,7 @@ void DFSfindSC(Graph g, int v1, bool visited[])
 
 void reverseDFSfindSC(Graph g, int v1, bool visited[])
 {	
-	int adj[1000];
+	int adj[MAX];
 	int n;
 	n = indegree(g, v1, adj);
 
@@ -242,11 +243,11 @@ void reverseDFSfindSC(Graph g, int v1, bool visited[])
 }
 
 double dijikstra(Graph graph, int start, int stop, int *path, int *length){
-	double total, distance[1000];
-	int min, id, i, n, neighbor, position, previous[1000], output[1000], temp[1000];
+	double total, distance[MAX];
+	int min, id, i, n, neighbor, position, previous[MAX], output[MAX], temp[MAX];
 	Dllist queue, shortest, node;
 	
-	for(i = 0; i < 1000; i++){
+	for(i = 0; i < MAX; i++){
 		distance[i] = INFINITIVE_VALUE;
 	}
 	
@@ -305,9 +306,9 @@ double dijikstra(Graph graph, int start, int stop, int *path, int *length){
 int DAG(Graph graph){
 	JRB vertex;
 	JRB node;
-	int visited[1000];
+	int visited[MAX];
 	Dllist queue, temp;
-	int i, n, output[1000];
+	int i, n, output[MAX];
 	jrb_traverse(vertex, graph->vertices){
 		memset(visited, 0, sizeof(visited));
 		queue = new_dllist();
@@ -344,9 +345,9 @@ void topology(Graph g, void (*func)(int)){
 	Dllist queue = new_dllist();
 	Dllist node, ptr;
 	int count;
-	int inde[1000] ;
+	int inde[MAX] ;
 	Jval v;
-	int inVertex[1000];
+	int inVertex[MAX];
 	JRB node1;
 	int key;
 
@@ -394,13 +395,13 @@ void topology(Graph g, void (*func)(int)){
 int numStrongConnect(Graph g)
 {
 	int count = 0;
-	bool visited[1000];
+	bool visited[MAX];
 	memset(pre, 0, sizeof(pre));
 	memset(pos, 0, sizeof(pos));
 	memset(visited, false, sizeof(visited));
 	JRB node;
 	int id;
-	int posMax[1000], num = 0;
+	int posMax[MAX], num = 0;
 	time = 1;
 
 	jrb_traverse(node, g->vertices)
@@ -416,7 +417,7 @@ int numStrongConnect(Graph g)
 	jrb_traverse(node, g->vertices)
 	{
 		temp = 0;
-		for(int i = 0; i < 1000; i++)
+		for(int i = 0; i < MAX; i++)
 		{
 			if(temp < pos[i])
 			{
@@ -440,6 +441,53 @@ int numStrongConnect(Graph g)
 	}
 
 	return count;
+}
+
+void exportDotfile(Graph g, LE list[])
+{
+	JRB node;
+	int n, path[MAX], count;
+	int nVer = 0, nEdge = 0;
+	jrb_traverse(node, g->vertices)
+	{
+		nVer ++;
+		int id;
+		id = jval_i(node->key);
+		n = outdegree(g, id, path);
+		for(int i = 0; i < n; i++)
+		{
+			count = 0;
+			for(int j = 0; j < nEdge; j++)
+			{
+				if(id == list[j].first && path[i] == list[j].last)
+				{
+					count++;
+				}
+			}
+
+			if(count == 0)
+			{
+				list[nEdge].first = id;
+				list[nEdge].last = path[i];
+				list[nEdge].weight = getEdgeValue(g, id, path[i]);
+				nEdge++;
+			}
+		} 
+	}
+
+	FILE *f = fopen("Graph.dot","w+");
+	if(f==NULL){
+    printf("cannot write\n");
+    exit(1);
+  }
+
+  fprintf(f,"digraph g{\n");
+  for(int i = 0; i < nEdge; i++)
+  {
+  	fprintf(f, "%d -> %d [label = \"%.3f\", weight = \"%.3f\"];\n",list[i].first, list[i].last, list[i].weight, list[i].weight);
+  }
+  fprintf(f, "}");
+	fclose(f);
 }
 
 void dropGraph(Graph graph)

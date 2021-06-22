@@ -65,8 +65,12 @@ int main(){
 
   int num;
 
-  num = numStrongConnect(g, printVertex);
-  printf("Number of strongly connected components: %d\n", num);
+  num = numStrongConnect(g);
+  printf("Number of strongly connected components: %d\n\n", num);
+
+  printf("Export file dot\n");
+  LE list[MAX];
+  exportDotfile(g, list);
  
   return 0;
 }

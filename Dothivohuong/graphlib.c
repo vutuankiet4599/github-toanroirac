@@ -268,6 +268,7 @@ graph readfromfile(char *filename,Ver ListVer[],int *sodinh,int *socanh){
     ListVer[i].Bac=incidentedges(g,i+1,output);
   }
   
+  fclose(f);
   return g;
 }
 void sapxepbac(Ver ListVer[],int sodinh){
@@ -349,7 +350,9 @@ void printdotfile(char *datafile,char *filenamedot,Ver ListVer[],Mau bangmau[],i
      //  printf("check edge:%d--%d\n",canh1,canh2);
   }
   fprintf(f,"}");
-  
+
+  fclose(f);
+  fclose(f2);
 
 }
 void readfilePrufer(char *filename,dscanh ds1[],int bac[],int *n){
@@ -371,6 +374,7 @@ void readfilePrufer(char *filename,dscanh ds1[],int bac[],int *n){
     bac[x]++;
     bac[y]++;
   }
+
 }
 void prindotfilemst(dscanh *mst,int canhmst){
   FILE *f=fopen("graphMST.dot","w+");
@@ -384,4 +388,5 @@ void prindotfilemst(dscanh *mst,int canhmst){
     fprintf(f,"%d--%d [label=\"%.2lf\"]\n", mst[i].x, mst[i].y, mst[i].weight);
   }
   fprintf(f,"}");
+  fclose(f);
 }

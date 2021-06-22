@@ -3,6 +3,7 @@
 #endif
 
 #define INFINITIVE_VALUE 10000000
+#define MAX 10000
 
 #include "jrb.h"
 #include <stdbool.h>
@@ -17,6 +18,12 @@ typedef struct _Graph{
 	JRB edges;
 	JRB vertices;
 } *Graph;
+
+typedef struct listEdge{
+	int first;
+	int last;
+	double weight;
+}LE;
 
 Graph createGraph();
 void addVertex(Graph graph, int id, char* name);
@@ -34,4 +41,5 @@ double dijikstra(Graph graph, int start, int stop, int *path, int *length);
 int DAG(Graph graph);
 void topology(Graph g, void (*func)(int));
 int numStrongConnect(Graph g);
+void exportDotfile(Graph g, LE list[]);
 void dropGraph(Graph graph);
