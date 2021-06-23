@@ -443,11 +443,12 @@ int numStrongConnect(Graph g)
 	return count;
 }
 
-void exportDotfile(Graph g, LE list[])
+void exportDotfile(Graph g)
 {
 	JRB node;
 	int n, path[MAX], count;
 	int nVer = 0, nEdge = 0;
+	LE list[MAX];
 	jrb_traverse(node, g->vertices)
 	{
 		nVer ++;

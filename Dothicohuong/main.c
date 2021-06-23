@@ -69,8 +69,8 @@ int main(){
   printf("Number of strongly connected components: %d\n\n", num);
 
   printf("Export file dot\n");
-  LE list[MAX];
-  exportDotfile(g, list);
+
+  exportDotfile(g);
  
   return 0;
 }

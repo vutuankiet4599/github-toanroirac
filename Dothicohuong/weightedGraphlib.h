@@ -41,5 +41,5 @@ double dijikstra(Graph graph, int start, int stop, int *path, int *length);
 int DAG(Graph graph);
 void topology(Graph g, void (*func)(int));
 int numStrongConnect(Graph g);
-void exportDotfile(Graph g, LE list[]);
+void exportDotfile(Graph g);
 void dropGraph(Graph graph);
