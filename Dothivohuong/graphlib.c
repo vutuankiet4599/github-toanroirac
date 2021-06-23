@@ -316,7 +316,7 @@ char *getnamecolor(Mau mau[],int countmau,int idmau){
   }
   
 }
-void printdotfile(char *datafile,char *filenamedot,Ver ListVer[],Mau bangmau[],int countmau){
+void printdotfileTomau(char *datafile,char *filenamedot,Ver ListVer[],Mau bangmau[],int countmau){
   
   FILE *f=fopen(filenamedot,"w+");
   if(f==NULL){

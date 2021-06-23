@@ -32,7 +32,7 @@ int incidentedges(graph graph, int vertex, int* output);
 double getEdgeValue(graph graph, int v1, int v2);
 int MST(graph g,dscanh mst[]);
 void dropgraph(graph graph);
-void printdotfile(char *datafile,char *filenamedot,Ver ListVer[],Mau bangmau[],int countmau);
+void printdotfileTomau(char *datafile,char *filenamedot,Ver ListVer[],Mau bangmau[],int countmau);
 char *getnamecolor(Mau mau[],int countmau,int idmau);
 void tomau(graph g,Ver ListVer[],int sodinh,int countmau);
 void sapxepbac(Ver ListVer[],int sodinh);
