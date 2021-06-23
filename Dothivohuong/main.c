@@ -31,7 +31,7 @@ int main(){
    sapxepbac(ListVer,sodinh);
    tomau(g,ListVer,sodinh,countmau);
    //printf("%d %d ->%d\n",ListVer[0].idVer,ListVer[1].idVer,adjacent(g,ListVer[0].idVer,ListVer[1].idVer));
-   printdotfile("dothi.txt","dothitomau.dot",ListVer,bangmau,countmau);
+   printdotfileTomau("dothi.txt","dothitomau.dot",ListVer,bangmau,countmau);
   // dot -Tpdf dothitomau.dot -o graph.pdf
   //start prufer
    int n1; // so phan tu cua cay
